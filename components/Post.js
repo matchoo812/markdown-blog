@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import CategoryLabel from './CategoryLabel';
 
 export default function Post({ post }) {
   // console.log(post);
@@ -10,7 +11,7 @@ export default function Post({ post }) {
       <Image src={cover_image} height={420} width={600} alt='image' className='mb-4' />
       <div className='flex justify-between items-center'>
         <span className='font-light text-gray-600'>{date}</span>
-        <div>{category}</div>
+        <CategoryLabel>{category}</CategoryLabel>
       </div>
 
       <div className='mt-2'>

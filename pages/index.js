@@ -4,9 +4,11 @@ import matter from 'gray-matter';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import Post from '../components/Post';
+import { sortByDate } from '../utils';
 
 export default function HomePage({ posts }) {
   // console.log(posts);
+
   return (
     <Layout>
       <h1 className='text-5xl border-b-4 p-5'>Latest Posts</h1>
@@ -27,17 +29,20 @@ export default function HomePage({ posts }) {
 
 export async function getStaticProps() {
   const files = fs.readdirSync(path.join('posts'));
-  const posts = files.map((file) => {
-    const slug = file.replace('.md', '');
-    const mdWithMeta = fs.readFileSync(path.join('posts', file), 'utf-8');
+  const posts = files
+    .map((file) => {
+      const slug = file.replace('.md', '');
+      const mdWithMeta = fs.readFileSync(path.join('posts', file), 'utf-8');
 
-    // use a colon to rename data being destructured out of function
-    const { data: frontmatter } = matter(mdWithMeta);
+      // use a colon to rename data being destructured out of function
+      const { data: frontmatter } = matter(mdWithMeta);
 
-    return { slug, frontmatter };
-  });
+      return { slug, frontmatter };
+    })
+    .sort(sortByDate);
 
   return {
-    props: { posts },
+    // return only first six posts
+    props: { posts: posts.slice(0, 6) },
   };
 }
