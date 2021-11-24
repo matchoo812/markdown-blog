@@ -5,8 +5,8 @@ import { marked } from 'marked';
 import sanitize from 'sanitize-html';
 import Link from 'next/link';
 import Image from 'next/image';
-import Layout from '../../components/Layout';
-import CategoryLabel from '../../components/CategoryLabel';
+import Layout from '@/components/Layout';
+import CategoryLabel from '@/components/CategoryLabel';
 
 export default function SinglePostPage({ content, frontmatter, slug }) {
   const { author, author_image, category, cover_image, date, excerpt, title } =

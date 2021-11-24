@@ -2,14 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import Link from 'next/link';
-import Layout from '../../../components/Layout';
-import Post from '../../../components/Post';
+import Layout from '@/components/Layout';
+import Post from '@/components/Post';
+import Pagination from '@/components/Pagination';
 import { sortByDate } from '../../../utils';
 import { POSTS_PER_PAGE } from '../../../config';
 
 export default function BlogPage({ posts, numPages, currentPage }) {
-  // console.log(posts);
-
   return (
     <Layout>
       <h1 className='text-5xl border-b-4 p-5'>Blog</h1>
@@ -19,6 +18,8 @@ export default function BlogPage({ posts, numPages, currentPage }) {
           <Post post={post} key={index} />
         ))}
       </div>
+
+      <Pagination currentPage={currentPage} numPages={numPages} />
     </Layout>
   );
 }
