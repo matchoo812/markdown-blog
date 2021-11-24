@@ -1,12 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
-import Link from 'next/link';
 import Layout from '@/components/Layout';
 import Post from '@/components/Post';
 import Pagination from '@/components/Pagination';
-import { sortByDate } from '../../../utils';
-import { POSTS_PER_PAGE } from '../../../config';
+import { POSTS_PER_PAGE } from '@/config/index';
+import { getPosts } from '@/lib/posts';
 
 export default function BlogPage({ posts, numPages, currentPage }) {
   return (
@@ -45,17 +43,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const page = parseInt((params && params.page_index) || 1);
   const files = fs.readdirSync(path.join('posts'));
-  const posts = files
-    .map((file) => {
-      const slug = file.replace('.md', '');
-      const mdWithMeta = fs.readFileSync(path.join('posts', file), 'utf-8');
-
-      // use a colon to rename data being destructured out of function
-      const { data: frontmatter } = matter(mdWithMeta);
-
-      return { slug, frontmatter };
-    })
-    .sort(sortByDate);
+  const posts = getPosts();
 
   const numPages = Math.ceil(files.length / POSTS_PER_PAGE);
   const pageIndex = page - 1;
