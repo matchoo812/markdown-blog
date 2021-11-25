@@ -3,21 +3,29 @@ import path from 'path';
 import Layout from '@/components/Layout';
 import Post from '@/components/Post';
 import Pagination from '@/components/Pagination';
+import CategoryList from '@/components/CategoryList';
 import { POSTS_PER_PAGE } from '@/config/index';
 import { getPosts } from '@/lib/posts';
 
-export default function BlogPage({ posts, numPages, currentPage }) {
+export default function BlogPage({ posts, numPages, currentPage, categories }) {
   return (
     <Layout>
-      <h1 className='text-5xl border-b-4 p-5'>Blog</h1>
+      <div className='flex justify-between'>
+        <div className='w-3/4 mr-10'>
+          <h1 className='text-5xl border-b-4 p-5'>Blog</h1>
 
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-5'>
-        {posts.map((post, index) => (
-          <Post post={post} key={index} />
-        ))}
+          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-5'>
+            {posts.map((post, index) => (
+              <Post post={post} key={index} />
+            ))}
+          </div>
+
+          <Pagination currentPage={currentPage} numPages={numPages} />
+        </div>
+        <div className='w-1/4'>
+          <CategoryList categories={categories} />
+        </div>
       </div>
-
-      <Pagination currentPage={currentPage} numPages={numPages} />
     </Layout>
   );
 }
@@ -45,11 +53,20 @@ export async function getStaticProps({ params }) {
   const files = fs.readdirSync(path.join('posts'));
   const posts = getPosts();
 
+  // get categories for sidebar
+  const categories = posts.map((post) => post.frontmatter.category);
+  const uniqueCategories = [...new Set(categories)];
+
   const numPages = Math.ceil(files.length / POSTS_PER_PAGE);
   const pageIndex = page - 1;
   const displayPosts = posts.slice(pageIndex * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
 
   return {
-    props: { posts: displayPosts, numPages, currentPage: page },
+    props: {
+      posts: displayPosts,
+      numPages,
+      currentPage: page,
+      categories: uniqueCategories,
+    },
   };
 }
